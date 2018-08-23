@@ -1,34 +1,59 @@
-#ifndef _IIR_H_
-#define _IIR_H_
+/*
+MIT License
+
+Copyright (c) 2018 Stewart Wadsworth
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#ifndef _C_IIR_H_
+#define _C_IIR_H_
 
 #ifndef FLOAT_TYPE
-#error FLOAT_TYPE must be specified. ex FLOAT_TYPE double
+#error FLOAT_TYPE must be specified
 #endif
 
 #include <stddef.h>
+#include <string.h>
 #include <assert.h>
 
-#define MACROARRAY(...) __VA_ARGS__
-#define IIR_INIT(name, num, den)								\
-FLOAT_TYPE name##_num[] = num;									\
-FLOAT_TYPE name##_den[] = den;									\
-FLOAT_TYPE name##_history[] = den;								\
-IIR name =														\
-{																\
-	sizeof(name##_num) / sizeof(name##_num[0]),					\
-	sizeof(name##_den) / sizeof(name##_den[0]),					\
-	name##_num,													\
-	name##_den,													\
-	name##_history												\
-};																\
-memset(name.history, 0, sizeof(FLOAT_TYPE) * name.den_size);	\
-assert(name.num_size > 0);										\
-assert(name.den_size > 0);										\
-assert(name.den_size >= name.num_size)
+#define IIR_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
+#define IIR_ARRAY(...) {__VA_ARGS__}
+#define IIR_INIT(name, num, den)							\
+FLOAT_TYPE name##_num[] = num;								\
+FLOAT_TYPE name##_den[] = den;								\
+FLOAT_TYPE name##_history[] = den;							\
+struct c_iir name =									\
+{											\
+	IIR_SIZE(name##_num),								\
+	IIR_SIZE(name##_den),								\
+	name##_num,									\
+	name##_den,									\
+	name##_history									\
+};											\
+memset( name.history, 0, sizeof(FLOAT_TYPE) * name.den_size);				\
+assert( name.num_size > 0 && "cannot have a zero size numerator" );			\
+assert( name.den_size > 0 && "cannot have a zero size denominator" );			\
+assert( name.den_size >= name.num_size && "requirement of 'standard programming'" )
 
 /*
-The IIR struct represents the all the data required to solve the general
-form of a discrete time transfer function such as:
+struct c_iir represents a general discrete time transfer function such as:
 
 	Output(z)    b[0] + b[1]*z^-1 + b[2]*z^-2 + ... + b[m]*z^-m
 	--------- = ------------------------------------------------
@@ -38,14 +63,14 @@ Where:
 	b is an array of length m that represents the numerator coefficients.
 	a is an array of length n that represents the denominator coefficients.
 */
-typedef struct _IIR
+struct c_iir
 {
-	size_t const num_size; // number of elements in num
-	size_t const den_size; // number of elements in den
-	FLOAT_TYPE * const num; // pointer to array of size num_size
-	FLOAT_TYPE * const den; // pointer to array of size den_size
-	FLOAT_TYPE * const history; // pointer to array of size den_size
-} IIR;
+	size_t num_size; // number of elements in num
+	size_t den_size; // number of elements in den
+	FLOAT_TYPE * num; // pointer to array of size num_size
+	FLOAT_TYPE * den; // pointer to array of size den_size
+	FLOAT_TYPE * history; // pointer to array of size den_size
+};
 
 /*
 IIR_calculate implements the "Standard Programming" approach as described
@@ -54,12 +79,13 @@ in "Discrete-Time Control Systems" by Katsuhiko Ogata.
 The "Standard Programming" approach requires:
 n >= m
 a[0] == 1
-sizeof(history) == n
+size(history) == n
 */
-FLOAT_TYPE IIR_calculate(IIR * const iir, FLOAT_TYPE const input);
+FLOAT_TYPE iir_calculate( const struct c_iir * iir, FLOAT_TYPE input );
 
-
-//check if iir is in the general form and updates it if possible.
-void IIR_to_general_form(IIR * const iir);
+/*
+check if iir is in the general form and updates it if possible.
+*/
+void iir_to_general_form( struct c_iir * iir );
 
 #endif
