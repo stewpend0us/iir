@@ -30,12 +30,11 @@ SOFTWARE.
 #define BACK(i) "\x1B[48;5;" #i "m"
 #define RESET "\x1b[0m"
 
-unsigned char run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected, int expected_count, const struct c_iir * iir, const char name[] )
+void run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected, int expected_count, const struct c_iir * iir, const char name[] )
 {
 	printf("TEST %s:\n", name );
 	FLOAT_TYPE output, error;
 	FLOAT_TYPE * in = input;
-	unsigned char good = 1;
 	printf( "%10s%20s%20s%20s%10s\n", "INPUT", "EXPECTED", "CALCULATED", "ERROR", "STATUS" );
 	for ( int i = 0; i<expected_count; i++ )
 	{
@@ -44,12 +43,10 @@ unsigned char run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected,
 		output = iir_calculate( iir, *in );
 		error = output - expected[i];
 		error = error < 0.0 ? -error : error;
-		unsigned char this_good = error < EPS;
-		good = good && this_good;
-		printf( "%10g%20f%20f%20g%33s\n", *in, expected[i], output, error, this_good ? BACK(10) TEXT(0) " GOOD " RESET : BACK(09) TEXT(0) "  BAD " RESET );
+		unsigned char good = error < EPS;
+		printf( "%10g%20f%20f%20g%33s\n", *in, expected[i], output, error, good ? BACK(10) TEXT(0) " GOOD " RESET : BACK(09) TEXT(0) "  BAD " RESET );
 	}
 	printf("\n");
-	return good;
 }
 
 int main(int argc, const char * argv[])
@@ -57,7 +54,7 @@ int main(int argc, const char * argv[])
 	IIR_INIT(iira, IIR_ARRAY(1, 2, 3), IIR_ARRAY(1, 2, 3, 4) );
 	FLOAT_TYPE inputa[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,  13,  14,  15, 16,   17,   18,   19,  20 };
 	FLOAT_TYPE expecteda[] = { 1, 2, 3, 0, 5, 6, 7, -12, 25, 10, 11, -88, 173, -50, 15, -484, 1217, -942, 275, -2480 };
-	unsigned char A = run_test( inputa, IIR_SIZE(inputa), expecteda, IIR_SIZE(expecteda), &iira, "A" );
+	run_test( inputa, IIR_SIZE(inputa), expecteda, IIR_SIZE(expecteda), &iira, "A" );
 
 	IIR_INIT(iirb, IIR_ARRAY(0.0,  0.035,  -0.029), IIR_ARRAY(1.0,  -1.9,   0.94) );
 	FLOAT_TYPE inputb[] = {1};
@@ -164,4 +161,5 @@ int main(int argc, const char * argv[])
 		0.150439606750227,
 		0.152344714110989,
 	};
+	run_test( inputb, IIR_SIZE(inputb), expectedb, IIR_SIZE(expectedb), &iirb, "B" );
 }
