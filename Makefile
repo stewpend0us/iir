@@ -5,7 +5,7 @@ LDFLAGS+=-DFLOAT_TYPE=float
 all: c_iir_test
 
 c_iir_test: c_iir.c c_iir_test.c
-	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	cc $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: test
 test: c_iir_test
