@@ -29,8 +29,6 @@ SOFTWARE.
 #error FLOAT_TYPE must be specified
 #endif
 
-#include <stddef.h>
-#include <string.h>
 #include <assert.h>
 
 #define IIR_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
@@ -47,7 +45,7 @@ struct c_iir name =									\
 	name##_den,									\
 	name##_history									\
 };											\
-memset( name.history, 0, sizeof(FLOAT_TYPE) * name.den_size);				\
+iir_init_zero( &name );								\
 assert( name.num_size > 0 && "cannot have a zero size numerator" );			\
 assert( name.den_size > 0 && "cannot have a zero size denominator" );			\
 assert( name.den_size >= name.num_size && "requirement of 'standard programming'" )
@@ -65,8 +63,8 @@ Where:
 */
 struct c_iir
 {
-	size_t num_size; // number of elements in num
-	size_t den_size; // number of elements in den
+	unsigned int num_size; // number of elements in num
+	unsigned int den_size; // number of elements in den
 	FLOAT_TYPE * num; // pointer to array of size num_size
 	FLOAT_TYPE * den; // pointer to array of size den_size
 	FLOAT_TYPE * history; // pointer to array of size den_size
@@ -87,5 +85,11 @@ FLOAT_TYPE iir_calculate( const struct c_iir * iir, FLOAT_TYPE input );
 check if iir is in the general form and updates it if possible.
 */
 void iir_to_general_form( struct c_iir * iir );
+
+/**/
+void iir_init_zero( struct c_iir * iir );
+
+/**/
+void iir_dcgain( const struct c_iir * iir );
 
 #endif

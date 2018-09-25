@@ -23,12 +23,14 @@ SOFTWARE.
 */
 
 #include "c_iir.h"
+#include <string.h>
+#include <stdio.h>
 
 FLOAT_TYPE iir_calculate( const struct c_iir * iir, FLOAT_TYPE input)
 {
-	size_t i;
-	size_t num_size = iir->num_size;
-	size_t den_size = iir->den_size;
+	unsigned int i;
+	unsigned int num_size = iir->num_size;
+	unsigned int den_size = iir->den_size;
 	FLOAT_TYPE const * num = iir->num;
 	FLOAT_TYPE const * den = iir->den;
 	FLOAT_TYPE * hist = iir->history;
@@ -49,15 +51,15 @@ FLOAT_TYPE iir_calculate( const struct c_iir * iir, FLOAT_TYPE input)
 
 void iir_to_general_form( struct c_iir * iir )
 {
-	size_t num_size = iir->num_size;
-	size_t den_size = iir->den_size;
+	unsigned int num_size = iir->num_size;
+	unsigned int den_size = iir->den_size;
 	FLOAT_TYPE * num = iir->num;
 	FLOAT_TYPE * den = iir->den;
 	FLOAT_TYPE val = den[0];
 
 	if (val != 1.0)
 	{
-		size_t i;
+		unsigned int i;
 		for (i = 0; i < num_size; i++)
 		{
 			num[i] /= val;
@@ -67,4 +69,31 @@ void iir_to_general_form( struct c_iir * iir )
 			den[i] /= val;
 		}
 	}
+}
+
+void iir_init_zero( struct c_iir * iir )
+{
+	memset( iir->history, 0, sizeof(FLOAT_TYPE) * iir->den_size);				\
+}
+
+void iir_dcgain( const struct c_iir * iir )
+{
+	unsigned int i;
+	unsigned int num_size = iir->num_size;
+	unsigned int den_size = iir->den_size;
+	FLOAT_TYPE const * num = iir->num;
+	FLOAT_TYPE const * den = iir->den;
+	FLOAT_TYPE * hist = iir->history;
+	FLOAT_TYPE n = 0;
+	FLOAT_TYPE d = 0;
+	for (i = 0; i < den_size; i++)
+	{
+		d += den[i];
+	}
+	for (i = 0; i < num_size; i++)
+	{
+		n += num[i];
+	}
+	return n/d; // will return NaN and +/-Inf
+	
 }

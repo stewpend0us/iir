@@ -2,3 +2,4 @@ c_iir_test
 *~
 *.o
 *.swp
+*.vim
