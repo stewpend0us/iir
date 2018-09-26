@@ -36,6 +36,7 @@ void run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected, int expe
 	printf("TEST %s:\n", name );
 	FLOAT_TYPE output, error;
 	FLOAT_TYPE * in = input;
+	printf(" DC Gain : %f\n", iir_dc_gain( iir ) );
 	printf( "%10s%20s%20s%20s%10s\n", "INPUT", "EXPECTED", "CALCULATED", "ERROR", "STATUS" );
 	for ( int i = 0; i<expected_count; i++ )
 	{
