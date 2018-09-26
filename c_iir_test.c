@@ -26,6 +26,7 @@ SOFTWARE.
 #include <stdio.h>
 
 #define EPS 1.0E-14
+
 #define TEXT(i) "\x1b[38;5;" #i "m"
 #define BACK(i) "\x1B[48;5;" #i "m"
 #define RESET "\x1b[0m"

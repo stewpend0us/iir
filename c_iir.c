@@ -76,14 +76,13 @@ void iir_init_zero( struct c_iir * iir )
 	memset( iir->history, 0, sizeof(FLOAT_TYPE) * iir->den_size);				\
 }
 
-void iir_dcgain( const struct c_iir * iir )
+FLOAT_TYPE iir_dc_gain( const struct c_iir * iir )
 {
 	unsigned int i;
 	unsigned int num_size = iir->num_size;
 	unsigned int den_size = iir->den_size;
 	FLOAT_TYPE const * num = iir->num;
 	FLOAT_TYPE const * den = iir->den;
-	FLOAT_TYPE * hist = iir->history;
 	FLOAT_TYPE n = 0;
 	FLOAT_TYPE d = 0;
 	for (i = 0; i < den_size; i++)

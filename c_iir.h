@@ -90,6 +90,6 @@ void iir_to_general_form( struct c_iir * iir );
 void iir_init_zero( struct c_iir * iir );
 
 /**/
-void iir_dcgain( const struct c_iir * iir );
+FLOAT_TYPE iir_dc_gain( const struct c_iir * iir );
 
 #endif
