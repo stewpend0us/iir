@@ -2,13 +2,13 @@ CFLAGS+=-Wall -Wextra -Wpedantic
 LDFLAGS+=-DFLOAT_TYPE=double
 
 .PHONY: all test clean
-all: c_iir_test
+all: iir_test
 
-c_iir_test: c_iir_test.c c_iir.c
+iir_test: iir_test.c iir.c
 	cc $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-test: c_iir_test
-	./c_iir_test
+test: iir_test
+	./iir_test
 
 clean:
-	rm -rf *.o *~ c_iir_test
+	rm -rf *.o *~ iir_test

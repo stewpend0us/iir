@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "c_iir.h"
+#include "iir.h"
 #include <stdio.h>
 
 #define EPS 1.0E-14
@@ -31,7 +31,7 @@ SOFTWARE.
 #define BACK(i) "\x1B[48;5;" #i "m"
 #define RESET "\x1b[0m"
 
-void run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected, int expected_count, const struct c_iir * iir, const char name[] )
+void run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected, int expected_count, const struct iir * iir, const char name[] )
 {
 	printf("TEST %s:\n", name );
 	FLOAT_TYPE output, error;

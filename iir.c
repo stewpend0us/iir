@@ -22,11 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "c_iir.h"
+#include "iir.h"
 #include <string.h>
 #include <stdio.h>
 
-FLOAT_TYPE iir_calculate( const struct c_iir * iir, FLOAT_TYPE input)
+FLOAT_TYPE iir_calculate( const struct iir * iir, FLOAT_TYPE input)
 {
 	unsigned int i;
 	unsigned int num_size = iir->num_size;
@@ -49,34 +49,44 @@ FLOAT_TYPE iir_calculate( const struct c_iir * iir, FLOAT_TYPE input)
 	return result;
 }
 
-void iir_to_general_form( struct c_iir * iir )
+int iir_check( struct iir * iir )
+{
+	unsigned int num_size = iir->num_size;
+	unsigned int den_size = iir->den_size;
+	if ( num_size == 0 ) return -1; //cannot have a zero size numerator
+	if ( den_size < num_size ) return -2; //requirement of 'standard programming'
+	return 0;
+	
+}
+
+void iir_to_general_form( struct iir * iir )
 {
 	unsigned int num_size = iir->num_size;
 	unsigned int den_size = iir->den_size;
 	FLOAT_TYPE * num = iir->num;
 	FLOAT_TYPE * den = iir->den;
-	FLOAT_TYPE val = den[0];
+	FLOAT_TYPE first = den[0];
 
-	if (val != 1.0)
+	if (first != 1.0)
 	{
 		unsigned int i;
 		for (i = 0; i < num_size; i++)
 		{
-			num[i] /= val;
+			num[i] /= first;
 		}
 		for (i = 0; i < den_size; i++)
 		{
-			den[i] /= val;
+			den[i] /= first;
 		}
 	}
 }
 
-void iir_init_zero( struct c_iir * iir )
+void iir_init_zero( struct iir * iir )
 {
 	memset( iir->history, 0, sizeof(FLOAT_TYPE) * iir->den_size);				\
 }
 
-FLOAT_TYPE iir_dc_gain( const struct c_iir * iir )
+FLOAT_TYPE iir_dc_gain( const struct iir * iir )
 {
 	unsigned int i;
 	unsigned int num_size = iir->num_size;
