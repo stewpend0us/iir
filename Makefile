@@ -1,4 +1,4 @@
-CFLAGS+=-Wall
+CFLAGS+=-Wall -Wextra -Wpedantic
 LDFLAGS+=-DFLOAT_TYPE=double
 
 .PHONY: all test clean

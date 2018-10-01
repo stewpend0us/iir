@@ -29,7 +29,7 @@ SOFTWARE.
 #error FLOAT_TYPE must be specified
 #endif
 
-#include <assert.h>
+//#include <assert.h>
 
 #define IIR_SIZE(arr) (sizeof(arr)/sizeof(arr[0]))
 #define IIR_ARRAY(...) {__VA_ARGS__}
@@ -45,10 +45,10 @@ struct c_iir name =									\
 	name##_den,									\
 	name##_history									\
 };											\
-iir_init_zero( &name );								\
-assert( name.num_size > 0 && "cannot have a zero size numerator" );			\
-assert( name.den_size > 0 && "cannot have a zero size denominator" );			\
-assert( name.den_size >= name.num_size && "requirement of 'standard programming'" )
+iir_init_zero( &name )
+//assert( name.num_size > 0 && "cannot have a zero size numerator" );
+//assert( name.den_size > 0 && "cannot have a zero size denominator" );
+//assert( name.den_size >= name.num_size && "requirement of 'standard programming'" )
 
 /*
 struct c_iir represents a general discrete time transfer function such as:

@@ -51,7 +51,7 @@ void run_test( FLOAT_TYPE * input, int in_count, FLOAT_TYPE * expected, int expe
 	printf("\n");
 }
 
-int main(int argc, const char * argv[])
+int main( void )
 {
 	IIR_INIT(iira, IIR_ARRAY(1, 2, 3), IIR_ARRAY(1, 2, 3, 4) );
 	FLOAT_TYPE inputa[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,  13,  14,  15, 16,   17,   18,   19,  20 };
